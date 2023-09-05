@@ -1,0 +1,195 @@
+{{define "content"}}
+{{- if .Data.Query }}
+<section>
+    <div class="container is-fluid mt-5">
+        <div class="columns is-centered">
+            <div class="column is-three-quarters">
+                <div class="block search-pane pb-2 mb-5">
+                    <form method="GET" action="/search">
+                        <div class="field has-addons has-addons-fullwidth">
+                            <div class="control has-icons-left">
+                                <input class="input is-medium" type="text" value="{{.Data.Query}}" name="q"
+                                    placeholder="Search anything..." autofocus>
+                                <span class="icon is-medium is-left">
+                                    <span class="mdi mdi-magnify mdi-24px"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <nav class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <div class="dropdown" x-data="{shown: false}" :class="{'is-active': shown}">
+                                        <div class="dropdown-trigger">
+                                            <button type="button" class="button is-rounded" x-on:click="shown = !shown"
+                                                aria-haspopup="true" aria-controls="dropdown-menu">
+                                                <span>Any Time</span>
+                                                <span class="icon is-small">
+                                                    <i class="mdi mdi-clock-time-eight-outline" aria-hidden="true"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div class="dropdown-menu" x-show="shown" @click.outside="shown = false"
+                                            id="dropdown-menu" role="menu">
+                                            <div class="dropdown-content">
+                                                <a href="#" class="dropdown-item">
+                                                    Dropdown item
+                                                </a>
+                                                <a class="dropdown-item">
+                                                    Other dropdown item
+                                                </a>
+                                                <a href="#" class="dropdown-item">
+                                                    Active dropdown item
+                                                </a>
+                                                <a href="#" class="dropdown-item">
+                                                    Other dropdown item
+                                                </a>
+                                                <hr class="dropdown-divider">
+                                                <a href="#" class="dropdown-item">
+                                                    With a divider
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="level-item">
+                                    <div class="dropdown" x-data="{shown: false}" :class="{'is-active': shown}">
+                                        <div class="dropdown-trigger">
+                                            <button type="button" class="button is-rounded" x-on:click="shown = !shown"
+                                                aria-haspopup="true" aria-controls="dropdown-menu">
+                                                <span>Type</span>
+                                                <span class="icon is-small">
+                                                    <i class="mdi mdi-cube-outline" aria-hidden="true"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div class="dropdown-menu" x-show="shown" @click.outside="shown = false"
+                                            id="dropdown-menu" role="menu">
+                                            <div class="dropdown-content">
+                                                <a href="#" class="dropdown-item">
+                                                    Dropdown item
+                                                </a>
+                                                <a class="dropdown-item">
+                                                    Other dropdown item
+                                                </a>
+                                                <a href="#" class="dropdown-item">
+                                                    Active dropdown item
+                                                </a>
+                                                <a href="#" class="dropdown-item">
+                                                    Other dropdown item
+                                                </a>
+                                                <hr class="dropdown-divider">
+                                                <a href="#" class="dropdown-item">
+                                                    With a divider
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    </form>
+                </div>
+                <div class="block columns">
+                    <div class="column is-three-quarters">
+                        {{range .Data.Results}}
+                        <div class="block search-result pb-5">
+                            <article class="media">
+                                <div class="media-left">
+                                    <figure class="image is-64x64">
+                                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="Image">
+                                    </figure>
+                                </div>
+                                <div class="media-content">
+                                    <div class="content">
+                                        <p>
+                                            <strong>Link Title Here</strong><br />
+                                            <span class="is-gray is-size-7">Updated 30mins ago - Jimmy</span>
+                                        </p>
+                                        <p>
+                                            Some results here with my <strong>highlighted</strong> text. We can use this
+                                            to create better documentation and more cross-functional teams. We should
+                                            have a meeting on this
+                                            to discuss upcoming objectives and other action items ...
+                                        </p>
+                                    </div>
+                                    <nav class="level is-mobile">
+                                        <div class="level-left">
+                                            <a class="level-item" aria-label="reply">
+                                                <span class="icon is-small">
+                                                    <i class="mdi mdi-reply" aria-hidden="true"></i>
+                                                </span>
+                                            </a>
+                                            <a class="level-item" aria-label="retweet">
+                                                <span class="icon is-small">
+                                                    <i class="mdi mdi-repeat-variant" aria-hidden="true"></i>
+                                                </span>
+                                            </a>
+                                            <a class="level-item" aria-label="like">
+                                                <span class="icon is-small">
+                                                    <i class="mdi mdi-heart" aria-hidden="true"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </article>
+                        </div>
+                        {{end}}
+                    </div>
+                    <div class="column is-one-quarter">
+                        <p class="is-gray has-text-centered pb-5">Found {{ len .Data.Results }} results in 0.2s</p>
+                        <nav class="panel">
+                            <a class="panel-block">
+                                <span class="panel-icon">
+                                    <i class="mdi mdi-gitlab" aria-hidden="true"></i>
+                                </span>
+                                GitLab
+                            </a>
+                            <a class="panel-block is-active">
+                                <span class="panel-icon">
+                                    <i class="mdi mdi-jira" aria-hidden="true"></i>
+                                </span>
+                                Jira
+                            </a>
+                            <a class="panel-block is-active">
+                                <span class="panel-icon">
+                                    <i class="mdi mdi-atlassian" aria-hidden="true"></i>
+                                </span>
+                                Confluence
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{else}}
+<section class="hero has-background-light is-fullheight">
+    <div class="hero-body">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-half">
+                    <form method="GET" action="/search">
+                        <div class="field has-addons has-addons-fullwidth">
+                            <div class="control">
+                                <input class="input is-medium" type="text" value="{{.Data.Query}}" name="q"
+                                    placeholder="Search anything..." autofocus>
+                            </div>
+                            <div class="control">
+                                <button class="button is-medium is-link" type="submit">
+                                    <span class="icon is-medium">
+                                        <span class="mdi mdi-magnify mdi-24px"></span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{end}}
+{{end}}

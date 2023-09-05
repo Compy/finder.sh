@@ -1,0 +1,12 @@
+{{define "content"}}
+    <h3 class="is-size-3 mb-5">
+        Add Data Source
+    </h3>
+    <div class="columns bordered">
+    {{- range .Data}}
+        <div class="column is-one-quarter has-text-centered">
+            <a href="/datasources/add/{{.ID}}">{{.PrettyName}}</a>
+        </div>
+    {{- end}}
+    </div>
+{{end}}

@@ -1,0 +1,45 @@
+{{define "content"}}
+    <h3 class="is-size-3 mb-5">
+        Data Sources
+        <div class="block is-pulled-right">
+            <a class="button is-link mt-3 has-text-weight-bold" href="{{call .ToURL "datasources.add"}}"><i class="mdi mdi-plus-circle mr-2"></i> Add Data Source</a>
+        </div>
+    </h3>
+    <div>
+        <table class="table is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Last Indexed</th>
+                    <th>Date Created</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{- range .Data.DataSources}}
+                <tr>
+                    <td><a href="/datasources/{{.ID}}">{{.Name}}</a></td>
+                    <td>{{ .Type }}</td>
+                    <td>
+                        {{ .Status}}
+                        {{- if (eq .Status "indexing")}}
+                        <span class="icon has-text-success"><i class="mdi mdi-refresh-circle"></i></span>
+                        {{- end}}
+                    </td>
+                    <td>{{.LastIndexed.Format "Jan 02, 2006 3:04PM"}}</td>
+                    <td>{{.DateAdded.Format "Jan 02, 2006"}}</td>
+                    <td>
+                        {{- if (eq .Status "idle")}}
+                            <a href="/datasources/reindex/{{.ID}}" class="button is-white"><i class="mdi mdi-refresh"></i></a>
+                        {{- else}}
+                            <a class="button is-white" disabled><i class="mdi mdi-refresh"></i></a>
+                        {{- end}}
+                    </td>
+                </tr>
+                {{- end}}
+            </tbody>
+        </table>
+    </div>
+{{end}}

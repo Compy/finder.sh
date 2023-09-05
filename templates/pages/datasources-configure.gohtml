@@ -1,0 +1,72 @@
+{{define "content"}}
+    <h3 class="is-size-3 mb-5">
+        Configure Data Source {{.Data.DataSource.PrettyName}}
+    </h3>
+    <form method="post" action="{{call .ToURL "datasources.new"}}">
+        <input type="hidden" name="id" value="{{.Data.DataSource.ID}}">
+        <div class="field">
+            <div class="control">
+                <label for="name" class="label">Data Source Name</label>
+                {{- if index .Data.FormValues "name" }}
+                <input id="name" class="input" type="text" placeholder="My Datasource Name" name="name" required value="{{index (index $.Data.FormValues "name") 0}}">
+                {{- else}}
+                <input id="name" class="input" type="text" placeholder="My Datasource Name" name="name" required>
+                {{- end}}
+            </div>
+        </div>
+    {{- range .Data.ConfigFields }}
+        <div class="field">
+            <div class="control">
+                {{- if (eq .Type "Text")}}
+                <label for="{{.Name}}" class="label">{{.PrettyName}}</label>
+                    {{- if index $.Data.FormValues .Name }}
+                    <input id="{{.Name}}" name="{{.Name}}" type="text" class="input" placeholder="{{.Placeholder}}" value="{{index (index $.Data.FormValues .Name) 0}}">
+                    {{- else}}
+                    <input id="{{.Name}}" name="{{.Name}}" type="text" class="input" placeholder="{{.Placeholder}}">
+                    {{- end}}
+                {{- end}}
+                {{- if (eq .Type "Password")}}
+                <label for="{{.Name}}" class="label">{{.PrettyName}}</label>
+                    {{- if index $.Data.FormValues .Name }}
+                    <input id="{{.Name}}" name="{{.Name}}" type="password" class="input" value="{{index (index $.Data.FormValues .Name) 0}}">
+                    {{- else}}
+                    <input id="{{.Name}}" name="{{.Name}}" type="password" class="input">
+                    {{- end}}
+                {{- end}}
+                {{- if (eq .Type "TextArea")}}
+                <label for="{{.Name}}" class="label">{{.PrettyName}}</label>
+                    {{- if index $.Data.FormValues .Name }}
+                    <textarea id="{{.Name}}" name="{{.Name}}" class="textarea" value="{{index (index $.Data.FormValues .Name) 0}}"></textarea>
+                    {{- else}}
+                    <textarea id="{{.Name}}" name="{{.Name}}" class="textarea"></textarea>
+                    {{- end}}
+                {{- end}}
+                {{- if (eq .Type "Checkbox")}}
+                <label class="checkbox">
+                    <input id="{{.Name}}" name="{{.Name}}" type="checkbox" value="{{.Value}}"> 
+                    {{.PrettyName}}
+                {{- end}}
+                {{- if (eq .Type "Radio")}}
+                    <label for="{{.Name}}" class="label">{{.PrettyName}}</label>
+                    {{- range .Options }}
+                    <label class="radio">
+                        <input name="{{$.Name}}" type="radio" value="{{.Value}}"> 
+                        {{.Text}}
+                    </label>
+                    {{- end}}
+                {{- end}}
+            </div>
+        </div>
+    {{- end}}
+
+        <hr />
+
+        <div class="field is-grouped">
+            <div class="control">
+                <button class="button is-link">Add Data Source</button>
+            </div>
+        </div>
+
+        {{template "csrf" .}}
+    </form>
+{{end}}

@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  cache:
+    image: "redis:alpine"
+    container_name: finder_cache
+    ports:
+      - "127.0.0.1:6379:6379"
+  db:
+    image: postgres:alpine
+    container_name: finder_db
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=app
+  opensearch:
+    image: opensearchproject/opensearch:2
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+    container_name: finder_opensearch
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node1
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+
+volumes:
+  opensearch-data:

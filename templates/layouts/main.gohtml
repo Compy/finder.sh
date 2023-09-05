@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" style="height:100%;">
+    <head>
+        {{template "metatags" .}}
+        {{template "css" .}}
+        {{template "js" .}}
+    </head>
+    <body class="has-background-light" style="min-height:100%;">
+    <div id="app">
+        <nav class="navbar is-dark">
+            <div class="container">
+                <div class="navbar-brand" hx-boost="true">
+                    <a href="{{call .ToURL "home"}}" class="navbar-item">
+                        <img src="/static/logo_white.png" alt="{{.AppName}}">
+                    </a>
+                </div>
+                <div id="navbarMenu" class="navbar-menu">
+                    <div class="navbar-end">
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            <a class="navbar-link">
+                                {{.AuthUser.Name}}
+                            </a>
+        
+                            <div class="navbar-dropdown">
+                                <a class="navbar-item" href="{{call .ToURL "account"}}">
+                                    Account Settings
+                                </a>
+                                <a class="navbar-item" href="{{call .ToURL "logout"}}">
+                                    Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-5">
+            <div class="columns">
+                <div class="column is-2">
+                    <aside class="menu" hx-boost="true">
+                        <p class="menu-label">General</p>
+                        <ul class="menu-list">
+                            <li>{{iconlink (call .ToURL "home") "Dashboard" .Path "mdi mdi-pulse" "rounded"}}</li>
+                            {{- if ingroup .Context "administrators"}}
+                            <li>{{iconlink (call .ToURL "datasources") "Data Sources" .Path "mdi mdi-database-outline" "rounded"}}</li>
+                            <li>{{iconlink (call .ToURL "appearance") "Search Appearance" .Path "mdi mdi-palette-outline" "rounded"}}</li>
+                            <li>{{iconlink (call .ToURL "querylog") "Query Log" .Path "mdi mdi-thought-bubble-outline" "rounded"}}</li>
+                            <li>{{iconlink (call .ToURL "users.list") "Users" .Path "mdi mdi-account-outline" "rounded"}}</li>
+                            <li>{{iconlink (call .ToURL "groups.list") "Groups" .Path "mdi mdi-account-group-outline" "rounded"}}</li>
+                            {{- end}}
+                        </ul>
+
+                        <p class="menu-label">Account</p>
+                        <ul class="menu-list">
+                            {{- if .IsAuth}}
+                                <li>{{iconlink (call .ToURL "logout") "Logout" .Path "mdi mdi-logout-variant"}}</li>
+                            {{- else}}
+                                <li>{{link (call .ToURL "login") "Login" .Path}}</li>
+                                <li>{{link (call .ToURL "register") "Register" .Path}}</li>
+                                <li>{{link (call .ToURL "forgot_password") "Forgot password" .Path}}</li>
+                            {{- end}}
+                        </ul>
+                    </aside>
+                </div>
+
+                <div class="column is-10">
+                    <div class="box">
+                        {{- if .Title}}
+                            <h1 class="title">{{.Title}}</h1>
+                        {{- end}}
+
+                        {{template "messages" .}}
+                        {{template "content" .}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{template "footer" .}}
+    </div>
+    </body>
+</html>

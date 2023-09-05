@@ -1,0 +1,57 @@
+{{define "content"}}
+{{- if not (eq .HTMX.Request.Target "newGroupForm")}}
+<div x-data="{showAddGroup: false}">
+    <h3 class="is-size-3 mb-5">
+        Groups
+        <div class="block is-pulled-right">
+            <button class="button is-link mt-3" @click="showAddGroup = true"><i class="mdi mdi-plus-circle mr-2"></i> Add Group</button>
+        </div>
+    </h3>
+    <div>
+        <table class="table is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Members</th>
+                    <th>Date Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{- range .Data.Groups}}
+                <tr>
+                    <td><a href="/groups/{{.ID}}">{{.Name}}</a></td>
+                    <td>{{ .QueryUsers.Count $.Context.Request.Context }}</td>
+                    <td>{{.CreatedAt.Format "Jan 02, 2006"}}</td>
+                </tr>
+                {{- end}}
+            </tbody>
+        </table>
+    </div>
+    <div :class="{'modal': true, 'is-active': showAddGroup}">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Add New Group</p>
+            <button class="delete" aria-label="close" @click="showAddGroup = false"></button>
+          </header>
+          <section class="modal-card-body">
+            {{template "form" .}}  
+          </section>
+          <footer class="modal-card-foot">
+            <button type="submit" class="button is-success" hx-post="{{call .ToURL "groups.new"}}" hx-include="#newGroupForm" hx-target="#newGroupForm">Add Group</button>
+            <button type="button" class="button" @click="showAddGroup = false">Cancel</button>
+          </footer>
+        </div>
+      </div>
+</div>
+{{else}}
+    {{template "form" .}}  
+{{- end}}
+{{end}}
+
+{{define "form"}}
+{{- if .Form.Submission.IsDone}}
+{{- else}}
+    {{ template "newgroupform" .}}
+{{- end}}
+{{end}}

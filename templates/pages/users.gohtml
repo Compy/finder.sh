@@ -1,0 +1,74 @@
+{{define "content"}}
+{{- if not (eq .HTMX.Request.Target "newUserForm")}}
+<div x-data="{showAddUser: false}">
+    <h3 class="is-size-3 mb-5">
+        Users
+        <div class="block is-pulled-right">
+            <button class="button is-link mt-3" @click="showAddUser = true"><i class="mdi mdi-plus-circle mr-2"></i> Add User</button>
+        </div>
+    </h3>
+    <div>
+        <table class="table is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Groups</th>
+                    <th>Date Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{- range .Data.Users}}
+                <tr>
+                    <td><a href="/users/{{.ID}}">{{.Name}}</a></td>
+                    <td>{{.Email}}</td>
+                    <td>
+                    <ul>
+                    {{- range .QueryGroups.All $.Context.Request.Context }}
+                        <li><a href="/groups/{{.ID}}">{{.Name}}</a></li>
+                    {{- end}}
+                    </ul>
+                    </td>
+                    <td>{{.CreatedAt.Format "Jan 02, 2006"}}</td>
+                </tr>
+                {{- end}}
+            </tbody>
+        </table>
+    </div>
+    <div :class="{'modal': true, 'is-active': showAddUser}">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Add New User</p>
+            <button class="delete" aria-label="close" @click="showAddUser = false"></button>
+          </header>
+          <section class="modal-card-body">
+            {{template "form" .}}  
+          </section>
+          <footer class="modal-card-foot">
+            <button type="submit" class="button is-success" hx-post="{{call .ToURL "users.new"}}" hx-include="#newUserForm" hx-target="#newUserForm">Save changes</button>
+            <button type="button" class="button" @click="showAddUser = false">Cancel</button>
+          </footer>
+        </div>
+      </div>
+</div>
+{{else}}
+    {{template "form" .}}  
+{{- end}}
+{{end}}
+
+{{define "form"}}
+{{- if .Form.Submission.IsDone}}
+<article class="message is-small is-success">
+    <div class="message-header">
+        <p>Thank you!</p>
+    </div>
+    <div class="message-body">
+        No email was actually sent but this entire operation was handled server-side and degrades without JavaScript
+        enabled.
+    </div>
+</article>
+{{- else}}
+    {{ template "newuserform" .}}
+{{- end}}
+{{end}}

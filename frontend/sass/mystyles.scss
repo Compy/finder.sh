@@ -1,0 +1,22 @@
+@charset "utf-8";
+
+// Import a Google Font
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
+
+.search-pane {
+    border-bottom: 1px solid #efefef;
+}
+
+@import "~bulma/bulma";
+
+.is-gray {
+    color: $grey-light;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #efefef;
+}
+
+.menu-list a.is-active.rounded {
+    border-radius: 8px;
+}

@@ -1,0 +1,105 @@
+{{define "content"}}
+{{- if not (eq .HTMX.Request.Target "newGroupMemberForm")}}
+<div x-data="{showAddGroupMember: false, showDeleteGroup: false, confirmDeleteGroup: ''}">
+    <h3 class="is-size-3 mb-5">
+        Groups / {{ .Data.Group.Name }}
+        <div class="block is-pulled-right">
+            <button class="button is-danger mt-3" hx-confirm="Are you sure you wish to delete this group?" hx-delete="/groups/{{.Data.Group.ID}}"><i class="mdi mdi-delete-outline mr-2"></i> Delete</button>
+            <button class="button is-link mt-3" @click="showAddGroupMember = true"><i class="mdi mdi-plus-circle mr-2"></i> Add Member</button>
+        </div>
+    </h3>
+    <div>
+        <table class="table is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{- range .Data.Group.QueryUsers.All .Context.Request.Context}}
+                <tr>
+                    <td><a href="/users/{{.ID}}">{{.Name}}</a></td>
+                    <td>{{.Email}}
+                    <td>
+                    <div class="is-pulled-right">
+                    {{- if or (ne .ID $.AuthUser.ID) (ne $.Data.Group.ID 1)}}
+                      <button class="button is-danger is-small is-rounded" hx-confirm="Are you sure you wish to remove this member from the group?" hx-delete="/groups/{{$.Data.Group.ID}}/member/{{.ID}}"><i class="mdi mdi-delete-outline"></i></button>
+                    {{- end}}
+                    </div>
+                    </td>
+                </tr>
+                {{- end}}
+            </tbody>
+        </table>
+    </div>
+    <div :class="{'modal': true, 'is-active': showAddGroupMember}">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Add New Group Member</p>
+            <button class="delete" aria-label="close" @click="showAddGroupMember = false"></button>
+          </header>
+          <section class="modal-card-body">
+            {{template "form" .}}  
+          </section>
+          <footer class="modal-card-foot">
+            <button type="submit" class="button is-success" hx-post="/groups/{{.Data.Group.ID}}/member" hx-include="#newGroupMemberForm" hx-target="#newGroupMemberForm">Add Member</button>
+            <button type="button" class="button" @click="showAddGroupMember = false">Cancel</button>
+          </footer>
+        </div>
+      </div>
+    <div :class="{'modal': true, 'is-active': showDeleteGroup}">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Delete Group</p>
+            <button class="delete" aria-label="close" @click="showDeleteGroup = false"></button>
+          </header>
+          <section class="modal-card-body">
+            <p>To delete this group, type <span class="is-italic">delete</span> in the text box below.</p> 
+            <form id="confirmDeleteGroupForm">
+            <input type="text" class="input is-danger" placeholder="delete" x-model="confirmDeleteGroup">
+            </form>
+          </section>
+          <footer class="modal-card-foot">
+            <button type="button" class="button is-danger" :disabled="confirmDeleteGroup != 'delete'" hx-delete="/groups/{{.Data.Group.ID}}">Delete Group</button>
+            <button type="button" class="button" @click="showDeleteGroup = false">Cancel</button>
+          </footer>
+        </div>
+      </div>
+</div>
+{{else}}
+    {{template "form" .}}  
+{{- end}}
+{{end}}
+
+{{define "form"}}
+{{- if .Form.Submission.IsDone}}
+<article class="message is-small is-success">
+    <div class="message-header">
+        <p>Thank you!</p>
+    </div>
+    <div class="message-body">
+        No email was actually sent but this entire operation was handled server-side and degrades without JavaScript
+        enabled.
+    </div>
+</article>
+{{- else}}
+    <form id="newGroupMemberForm" method="post" hx-boost="true">
+    <div class="field">
+        <label for="user_id" class="label">Name</label>
+        <div class="control">
+            <select id="user_id" name="user_id" class="input {{.Form.Submission.GetFieldStatusClass " UserID"}}" value="{{.Form.UserID}}" placeholder="Select a User">
+              {{- range .Data.Users}}
+              <option value="{{.ID}}">{{.Name}} ({{.Email}})</option>
+              {{- end}}
+            </select>
+        </div>
+        {{template "field-errors" (.Form.Submission.GetFieldErrors "Name")}}
+    </div>
+    {{template "csrf" .}}
+</form>
+{{- end}}
+{{end}}

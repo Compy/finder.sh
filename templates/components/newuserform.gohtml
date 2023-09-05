@@ -1,0 +1,30 @@
+{{define "newuserform"}}
+<form id="newUserForm" method="post" hx-boost="true">
+    <div class="field">
+        <label for="name" class="label">Name</label>
+        <div class="control">
+            <input id="name" name="name" type="text" class="input {{.Form.Submission.GetFieldStatusClass " Name"}}"
+                value="{{.Form.Name}}">
+        </div>
+        {{template "field-errors" (.Form.Submission.GetFieldErrors "Name")}}
+    </div>
+
+    <div class="field">
+        <label for="email" class="label">Email address</label>
+        <div class="control">
+            <input id="email" name="email" type="email" class="input {{.Form.Submission.GetFieldStatusClass " Email"}}"
+                value="{{.Form.Email}}">
+        </div>
+        {{template "field-errors" (.Form.Submission.GetFieldErrors "Email")}}
+    </div>
+            
+    <div class="field">
+        <label for="password1" class="label">Password</label>
+        <div class="control">
+            <input id="password1" name="password" type="password" class="input {{.Form.Submission.GetFieldStatusClass " Password"}}" autocomplete="off">
+        </div>
+        {{template "field-errors" (.Form.Submission.GetFieldErrors "Password")}}
+    </div>
+    {{template "csrf" .}}
+</form>
+{{end}}
